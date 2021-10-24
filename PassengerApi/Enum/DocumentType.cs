@@ -7,8 +7,8 @@ namespace PassengerApi.Enum
 {
     public enum DocumentType
     {
-        Pasaport,
-        Visa,
-        TravelDocument
+        Pasaport = 1,
+        Visa = 2,
+        TravelDocument = 3
     }
 }

@@ -27,47 +27,58 @@ namespace PassengerApi
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            services.AddMemoryCache();
+            services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Latest);
             services.AddDbContext<PassengerApiContext>(options => options.UseSqlServer(Configuration.GetConnectionString("PassengerApiContext")));
             
-            services.AddControllers();
+            //services.AddControllers();
 
-            services.AddCors(option =>
-            {
-                option.AddPolicy("CorsPolicy",
-                    builder => builder.AllowAnyOrigin()
-                    .AllowAnyMethod()
-                    .AllowAnyHeader()
-                    .AllowCredentials());
-            });
+            //services.AddCors(option =>
+            //{
+            //    option.AddPolicy("CorsPolicy",
+            //        builder => builder.AllowAnyOrigin()
+            //        .AllowAnyMethod()
+            //        .AllowAnyHeader()
+            //        .AllowCredentials());
+            //});
             services.AddScoped(typeof(IDataRepository<>), typeof(DataRepository<>));
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
+        public void Configure(IApplicationBuilder app, IHostEnvironment env)
         {
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
             }
-            app.UseCors("CorsPolicy");
+            else
+                app.UseHsts();
+            //app.UseCors("CorsPolicy");
             app.UseStaticFiles();
+            app.UseRouting();
+            
             //app.UseMvc(routes =>
             //{
             //    routes.MapRoute(
             //        name: "default",
             //        template: "{controller}/{action=Index}/{id?}");
             //});
-            app.UseHttpsRedirection();
-
-            app.UseRouting();
-
-            //app.UseAuthorization();
-
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapDefaultControllerRoute();
-                endpoints.MapControllers();
             });
+
+            //app.UseHttpsRedirection();
+
+
+
+            //app.UseAuthorization();
+
+            //app.UseEndpoints(endpoints =>
+            //{
+            //    endpoints.MapDefaultControllerRoute();
+            //    endpoints.MapControllers();
+            //});
         }
     }
 }
